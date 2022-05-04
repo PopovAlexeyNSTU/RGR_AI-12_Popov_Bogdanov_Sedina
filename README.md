@@ -1,0 +1,1 @@
+# RGR_AI-12_Popov_Bogdanov_Sedina
