@@ -1,0 +1,105 @@
+#include <iostream>
+#include <Windows.h>
+#include <vector>
+#include <string>
+using namespace std;
+
+//Шифрование
+string ecrypt(string input) {
+	vector<char> word(input.begin(), input.end());
+	string alph = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+	for (int i = 0; i < (int)input.length(); i++) {
+		for (int j = 0; j < (int)alph.length(); j++) {
+			if (word[i] == alph[j]) {
+				word[i] = alph[(j + 3) % 33];
+				break;
+			}
+		}
+	}
+	string str(word.begin(), word.end());
+	return str;
+}
+
+//Дешифрование
+string decrypt(string input) {
+	vector<char> word(input.begin(), input.end());
+	string alph = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+	for (int i = 0; i < (int)input.length(); i++) {
+		for (int j = 0; j < (int)alph.length(); j++) {
+			if (word[i] == 'а') {
+				word[i] = 'э';
+				break;
+			}
+			else if (word[i] == 'б') {
+				word[i] = 'ю';
+				break;
+			}
+			else if (word[i] == 'в') {
+				word[i] = 'я';
+				break;
+			}
+			else if (word[i] == alph[j]) {
+				word[i] = alph[(j - 3) % 33];
+				break;
+			}
+		}
+	}
+	string str(word.begin(), word.end());
+	return str;
+}
+
+int main() {
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	for( ; ; ){
+		string code;
+		cout << "Введите пароль: ";
+		getline(cin, code);
+		string password = "1453";
+
+		if (code == password) {
+			cout << endl << "Добро пожаловать!" << endl;
+			for (; ; ) {
+				cout << endl << "Выберите шифр:" << endl << "________________________________" << endl;
+				cout << "Нажмите <1> для выбора шифра Цезаря" << endl << "Нажмите <2> для выбора шифра " << endl;
+			
+				int num;
+				cin >> num;
+				switch (num) {
+
+				case 1:
+				{
+					cout << "Введите сообщение: ";
+					string text; //Первоначальный текст
+					getline(cin, text);
+					getline(cin, text);
+
+					string textecrypt = ecrypt(text);
+					cout << "Зашифрованный текст:" << "  " << textecrypt << endl; //Зашифрованный текст
+
+					string textdecrypt = decrypt(textecrypt);
+					cout << "Расшифрованный текст:" << "  " << textdecrypt << endl; //Расшифрованный текст
+					cout << endl << "Нажмите Enter для выбора другого шифра" << endl;
+					cin.ignore();
+				}
+					continue;
+
+				case 2:
+					cout << num << endl;
+
+					continue;
+				
+				default:
+					cout << endl << "Выберите предложенные варианты!" << endl;
+					continue;
+				}
+			}
+			
+		}
+		else {
+			cout << "Пароль неверный" << endl << "Повторите попытку!!!" << endl << endl;
+			continue;
+		}
+	}
+	return 0;
+}
