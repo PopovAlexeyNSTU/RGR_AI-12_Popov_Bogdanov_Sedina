@@ -4,14 +4,15 @@
 #include <string>
 using namespace std;
 
-//Шифрование
-string ecrypt(string input) {
+
+//Шифрование Цезарь
+string ecrypt_ces(string input, int key) {
 	vector<char> word(input.begin(), input.end());
 	string alph = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
 	for (int i = 0; i < (int)input.length(); i++) {
 		for (int j = 0; j < (int)alph.length(); j++) {
 			if (word[i] == alph[j]) {
-				word[i] = alph[(j + 3) % 33];
+				word[i] = alph[(j + key) % 33];
 				break;
 			}
 		}
@@ -20,26 +21,55 @@ string ecrypt(string input) {
 	return str;
 }
 
-//Дешифрование
-string decrypt(string input) {
+//Дешифрование Цезарь
+string decrypt_ces(string input, int key) {
 	vector<char> word(input.begin(), input.end());
 	string alph = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
 	for (int i = 0; i < (int)input.length(); i++) {
 		for (int j = 0; j < (int)alph.length(); j++) {
-			if (word[i] == 'а') {
-				word[i] = 'э';
+			if (word[i] == alph[j]) {
+				if((j - key) % 33 > 0)
+					word[i] = alph[(j - key) % 33];
+				else {
+					int j1 = key;
+					while (j != 0) {
+						j--;
+						j1--;
+					}
+					word[i] = alph[(33 - j1) % 33];
+				}
 				break;
 			}
-			else if (word[i] == 'б') {
-				word[i] = 'ю';
+		}
+	}
+	string str(word.begin(), word.end());
+	return str;
+}
+
+//Шифрование Атбаш
+string ecrypt_atb(string input) {
+	vector<char> word(input.begin(), input.end());
+	string alph = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+	for (int i = 0; i < (int)input.length(); i++) {
+		for (int j = 0; j < (int)alph.length(); j++) {
+			if (word[i] == alph[j]) {
+				word[i] = alph[32 - j];
 				break;
 			}
-			else if (word[i] == 'в') {
-				word[i] = 'я';
-				break;
-			}
-			else if (word[i] == alph[j]) {
-				word[i] = alph[(j - 3) % 33];
+		}
+	}
+	string str(word.begin(), word.end());
+	return str;
+}
+
+//Дешифрование Атбаш
+string decrypt_atb(string input) {
+	vector<char> word(input.begin(), input.end());
+	string alph = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+	for (int i = 0; i < (int)input.length(); i++) {
+		for (int j = 0; j < (int)alph.length(); j++) {
+			if (word[i] == alph[j]) {
+				word[i] = alph[32 - j];
 				break;
 			}
 		}
@@ -51,7 +81,7 @@ string decrypt(string input) {
 int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-	for( ; ; ){
+	for (; ; ) {
 		string code;
 		cout << "Введите пароль: ";
 		getline(cin, code);
@@ -61,8 +91,8 @@ int main() {
 			cout << endl << "Добро пожаловать!" << endl;
 			for (; ; ) {
 				cout << endl << "Выберите шифр:" << endl << "________________________________" << endl;
-				cout << "Нажмите <1> для выбора шифра Цезаря" << endl << "Нажмите <2> для выбора шифра " << endl;
-			
+				cout << "Нажмите <1> для выбора шифра Цезаря" << endl << "Нажмите <2> для выбора шифра Атбаша " << endl;
+
 				int num;
 				cin >> num;
 				switch (num) {
@@ -74,27 +104,46 @@ int main() {
 					getline(cin, text);
 					getline(cin, text);
 
-					string textecrypt = ecrypt(text);
-					cout << "Зашифрованный текст:" << "  " << textecrypt << endl; //Зашифрованный текст
+					int key;
+					cout << "Введите ключ: ";
+					cin >> key;
 
-					string textdecrypt = decrypt(textecrypt);
+					string textecrypt = ecrypt_ces(text,key);
+					cout << endl << "Зашифрованный текст:" << "  " << textecrypt << endl; //Зашифрованный текст
+
+					string textdecrypt = decrypt_ces(textecrypt,key);
+					cout << "Расшифрованный текст:" << "  " << textdecrypt << endl; //Расшифрованный текст
+					cout << endl << "Нажмите Enter для выбора другого шифра" << endl;
+					cin.ignore();
+					cin.ignore();
+				}
+				continue;
+
+				case 2:
+				{
+					cout << "Введите сообщение: ";
+					string text; //Первоначальный текст
+					getline(cin, text);
+					getline(cin, text);
+
+					string textecrypt = ecrypt_atb(text);
+					cout << endl << "Зашифрованный текст:" << "  " << textecrypt << endl; //Зашифрованный текст
+
+					string textdecrypt = decrypt_atb(textecrypt);
 					cout << "Расшифрованный текст:" << "  " << textdecrypt << endl; //Расшифрованный текст
 					cout << endl << "Нажмите Enter для выбора другого шифра" << endl;
 					cin.ignore();
 				}
-					continue;
 
-				case 2:
-					cout << num << endl;
 
 					continue;
-				
+
 				default:
 					cout << endl << "Выберите предложенные варианты!" << endl;
 					continue;
 				}
 			}
-			
+
 		}
 		else {
 			cout << "Пароль неверный" << endl << "Повторите попытку!!!" << endl << endl;
